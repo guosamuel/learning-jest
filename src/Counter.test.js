@@ -27,5 +27,31 @@ function renderWithRedux(component, { initialState, store = createStore(reducer,
 }
 
 it("renders with redux", () => {
-  const { getByTestId, getByText } = renderWithRedux(<Counter />)
+  const { getByTestId } = renderWithRedux(<Counter />)
+  expect(getByTestId('count')).toHaveTextContent('0')
+})
+
+it('can increment', () => {
+  const { getByTestId, getByText} = renderWithRedux(<Counter />);
+  fireEvent.click(getByText('+'))
+  expect(getByTestId('count')).toHaveTextContent('1')
+})
+
+it('can decrement', () => {
+  const { getByTestId, getByText} = renderWithRedux(<Counter />);
+  fireEvent.click(getByText('-'))
+  expect(getByTestId('count')).toHaveTextContent('-1')
+})
+
+it('can have initial state', () => {
+  const { getByTestId } = renderWithRedux(<Counter />, {
+    initialState: {count: 5}
+  })
+  expect(getByTestId('count')).toHaveTextContent('5')
+})
+
+it('can have custom store', () => {
+  const store = createStore(() => ({ count: 35 }))
+  const { getByTestId } = renderWithRedux(<Counter />, { store })
+  expect(getByTestId("count")).toHaveTextContent("35")
 })
